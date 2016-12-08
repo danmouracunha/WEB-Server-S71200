@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<!-- <meta http-equiv="refresh" content="1">  -->
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>CLP S6 1200|Web Server</title>
+
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="jumbotron.css" rel="stylesheet">
+    <script src="ie-emulation-modes-warning.js"></script>
+  </head>
+
+  <body>
+	<!--AWP_In_Variable Name="Atuador_0"-->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">CLP S7 1200| Web Server</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Surpevisório</h1>
+        <p>Neste modulo, você poderá ver e gerenciar as tags referentes aos sensores e atuadores da sua planta de um modo fácil
+		e prático na melhor plataforma que temos hoje que é a Web, já que é bem mais prático de acessar de todos os locais inclusive
+		do seu smartphone! É possível ver os valores das tags através de gráficos e labels que facilitam a vista do usuário/operador.</p>        
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="panel panel-info">
+            <div class="panel-heading">Entrada de caixas</div>
+            <div class="panel-body">
+              <div class="col-md-9">
+                <label for="sensor">Atuador_0 - Endereço %Q0.0: </label>                
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <span class="label label-primary" style="font-size:14px;" id="label_0">0</span>
+                </div> 
+              </div>
+              </br>
+              </br>
+              <div class="col-md-9">                
+                <label for="sensor">Sensor_1-Endereço %I0.1:</label>
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <span class="label label-primary" style="font-size:14px;" id="label_1">0</span>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="panel panel-success">
+            <div class="panel-heading">Saída de caixas</div>
+            <div class="panel-body">
+              <div class="col-md-9">
+                <label for="sensor">Atuador_5 - Endereço %Q0.5: </label>                
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <span class="label label-success" style="font-size:14px;" id="label_2">0</span>
+                </div> 
+              </div>
+              </br>
+              </br>
+              <div class="col-md-9">                
+                <label for="sensor">Sensor_6 - Endereço %I0.6: </label>
+              </div>
+              <div class="col-md-3">
+                <div id="sensor_6">
+                  <Label class="label label-success" style="font-size:14px;" id="label_3">0</Label>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div id="graficoAtuador" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div id="graficoAtuador2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+		<div class="col-md-6 col-sm-12">
+          <div id="graficoSensor" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div id="graficoSensor2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+      </div> 
+      <hr>
+      <footer>
+        <p>&copy; Jonathan Braga & Daniel Moura</p>
+      </footer>
+    </div>
+    <script src="jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="bootstrap.min.js"></script>
+    <script src="ie10-viewport-bug-workaround.js"></script>
+    <script src="highstock.js"></script>
+	<script src="highchart.js"></script>
+    <script src="exporting.js"></script>
+	
+    
+	<script type="text/javascript">
+    //---Variaveis----//
+	var valAtuador0;
+    var valAtuador5;
+
+	var ValSensor1;
+    var ValSensor6;
+
+    var vecAtuador0=[]; 
+    var vecSensor1=[];
+    //---/Variaveis----//
+
+    //---Atualização das DIVS e obtenção dos valores dos sensores//
+	$(document).ready(function () {		
+		$.ajaxSetup({cache:false}); 
+		setInterval(function(){
+            //Atuador_0
+			$.get("atuador0.html",function(restult){
+				$("#label_0").text(restult.trim());				
+			});
+			valAtuador0 = parseInt($("#label_0").text());
+            //Atuador_5
+			$.get("atuador5.html",function(restult){
+				$("#label_2").text(restult.trim());				
+			});
+			valAtuador5 = parseInt($("#label_2").text());
+			//Sensor_1
+			$.get("sensor1.html",function(restult){
+				$("#label_1").text(restult.trim());				
+			});
+			ValSensor1 = parseInt($("#label_1").text());
+            //Sensor_6
+			$.get("sensor6.html",function(restult){
+				$("#label_3").text(restult.trim());				
+			});
+			ValSensor6 = parseInt($("#label_3").text());
+		}, 1000);
+	});
+//---/Atualização das DIVS e obtenção dos valores dos sensores//
+
+//-----------------------------Gráficos----------------------//
+
+    //--Grafico Principal atuador_0---//
+    $(function () {
+        Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+        Highcharts.chart('graficoAtuador', {
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    events: {
+                        load: function () {
+
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = valAtuador0
+                                series.addPoint([x, y], true, true);
+                            }, 1000);
+                        }
+                    }
+            },
+            title: {
+                text: 'Atuador 0',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 50
+                },
+            yAxis: {
+                title: {
+                    text: 'Estado'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            credits:{
+                enabled:false
+            },
+            exporting: {
+                 enabled: false
+            },
+            series: [{
+                    name: 'atuador_0',
+                    color: '#00008b',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: 0
+                            });
+                        }
+                        return data;
+                    }())
+                }]
+        });
+    });
+
+    //--Grafico Principal atuador_5---//
+    $(function () {
+        Highcharts.chart('graficoAtuador2', {
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    events: {
+                        load: function () {
+
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = valAtuador5
+                                series.addPoint([x, y], true, true);
+                            }, 1000);
+                        }
+                    }
+            },
+            title: {
+                text: 'Atuador 5',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 50
+                },
+            yAxis: {
+                title: {
+                    text: 'Estado'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            credits:{
+                enabled:false
+            },
+            exporting: {
+                 enabled: false
+            },
+            series: [{
+                    name: 'atuador_5',
+                    color: '#0033FF',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: 0
+                            });
+                        }
+                        return data;
+                    }())
+                }]
+        });
+    });
+    //--/Grafico Principal atuador_0---//
+
+    //--Grafico Sensores---//
+    
+        //Grafico Sensor_1
+    $(function () {
+        Highcharts.chart('graficoSensor', {
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    events: {
+                        load: function () {
+
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = ValSensor1
+                                series.addPoint([x, y], true, true);
+                            }, 1000);
+                        }
+                    }
+            },
+            title: {
+                text: 'Sensor 1',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 50
+                },
+            yAxis: {
+                title: {
+                    text: 'Estado'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            
+            credits:{
+                enabled:false
+            },
+            exporting: {
+                 enabled: false
+            },
+            series: [{
+                    name: 'sensor_1',
+                    color: '#006400',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: 0
+                            });
+                        }
+                        return data;
+                    }())
+                }]
+        });
+    });
+
+    //Grafico Sensor_5
+    $(function () {
+        Highcharts.chart('graficoSensor2', {
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    events: {
+                        load: function () {
+
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = ValSensor6
+                                series.addPoint([x, y], true, true);
+                            }, 1000);
+                        }
+                    }
+            },
+            title: {
+                text: 'Sensor 6',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 50
+                },
+            yAxis: {
+                title: {
+                    text: 'Estado'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#02cd32'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            
+            credits:{
+                enabled:false
+            },
+            exporting: {
+                 enabled: false
+            },
+            series: [{
+                    name: 'sensor_6',
+                    color: '#000000',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: 0
+                            });
+                        }
+                        return data;
+                    }())
+                }]
+        });
+    });
+    //--/Grafico Sensor---//
+//-----------------------------/Gráficos----------------------//
+	</script>
+  </body>
+</html>

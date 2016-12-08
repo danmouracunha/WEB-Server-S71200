@@ -1,0 +1,81 @@
+var atuador_0Data = [1,1,0,1,0,1,0,0,1,1,0,1,0];
+var atuador_5Data = [0,0,1,0,1,0,1,1,0,0,1,0,1];
+var teste = [];
+
+
+
+var cont = 0
+function loaddiv(){
+    $("#sensor_6").load(function(){
+        $(this).unwrap();
+    });
+    $("#sensor_6 span").text(cont);  
+    teste.push(cont) 
+    cont= cont +1;     
+    // console.log(teste)
+    return teste;
+}
+$(document).ready(function(){
+    loaddiv();
+    setInterval(function(){
+        loaddiv()
+    },1000)
+});
+
+
+$(function () {
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    // Create the chart
+    Highcharts.stockChart('container', {
+        chart: {
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = Math.round(Math.random() * 100);
+                        series.addPoint([x, y], true, true);
+                    }, 1000);
+                }
+            }
+        },
+
+        rangeSelector: {
+            enabled:false
+        },
+
+        title: {
+            text: 'Live random data'
+        },
+
+        exporting: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Random data',
+            data: (function () {
+                // generate an array of random data
+                var data = [],
+                 a=0,
+                    i;
+
+                for (i = 0; i <= 10; i++) {
+                    a=a+i
+                    console.log(a)
+                    data.push("valor de a =",a);
+                }
+                return data;
+            }())
+        }]
+    });
+
+});
